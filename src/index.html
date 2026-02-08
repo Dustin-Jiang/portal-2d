@@ -75,6 +75,7 @@
     <script type="text/javascript" src="script/utils/AchievementDisp.js"></script>
     <script type="text/javascript" src="script/Managers/AchievementManager.js"></script>
     <script type="text/javascript" src="script/Managers/DataManager.js"></script>
+    <script type="text/javascript" src="script/Managers/SoundManager.js"></script>
 
     <script type="text/javascript">
         const slideIn = () => {
@@ -104,7 +105,14 @@
 
             window.$game = {
                 dataManager: new DataManager(),
+                soundManager: new SoundManager("index"),
             }
+
+            window.$game.soundManager.bgmsFormal = [
+                new Audio("./assets/audios/bgms/ショパン「雨だれ」.mp3"),
+                new Audio("./assets/audios/bgms/ドビュッシー「亜麻色の髪の乙女」.mp3"),
+            ]
+            await window.$game.soundManager.load();
 
             const achievementDisp = new AchievementDisp(
                 document.querySelector(".achievement-container > .list")

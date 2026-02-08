@@ -15,9 +15,9 @@ class SoundManager {
         if (this.backgroundMusic)
             this.backgroundMusic.pause();
         if (name)
-            this.backgroundMusic = this.bgms[ name ];
+            this.backgroundMusic = this.bgms[name];
         else
-            this.backgroundMusic = this.bgmsFormal[ Math.floor(Math.random() * this.bgmsFormal.length) ];
+            this.backgroundMusic = this.bgmsFormal[Math.floor(Math.random() * this.bgmsFormal.length)];
         // console.log(this.backgroundMusic);
         this.backgroundMusic.currentTime = 0;
         this.backgroundMusic.volume = 0.5;
@@ -40,20 +40,20 @@ class SoundManager {
         this.sounds = {};
         this.soundsURL = await window.$game.dataManager.loadJSON("./assets/audios/Sounds.json");
         Object.keys(this.soundsURL).forEach((kind) => {
-            this.sounds[ kind ] = {};
-            Object.keys(this.soundsURL[ kind ]).forEach((id) => {
-                const audio = new Audio(this.soundsURL[ kind ][ id ]);
+            this.sounds[kind] = {};
+            Object.keys(this.soundsURL[kind]).forEach((id) => {
+                const audio = new Audio(this.soundsURL[kind][id]);
                 audio.loop = false;
-                this.sounds[ kind ][ id ] = audio;
+                this.sounds[kind][id] = audio;
             });
         });
 
         this.bgms = {};
         this.bgmsURL = await window.$game.dataManager.loadJSON("./assets/audios/BGMs.json");
         Object.keys(this.bgmsURL).forEach((id) => {
-            const audio = new Audio(this.bgmsURL[ id ]);
+            const audio = new Audio(this.bgmsURL[id]);
             audio.loop = true;
-            this.bgms[ id ] = audio;
+            this.bgms[id] = audio;
         });
 
     }
@@ -61,7 +61,7 @@ class SoundManager {
         /**
          * @type {HTMLAudioElement}
          */
-        const sound = this.sounds[ kind ] && this.sounds[ kind ][ id ];
+        const sound = this.sounds[kind] && this.sounds[kind][id];
         if (sound) {
             if (!sound.paused) {
                 if (kind == "walk")
