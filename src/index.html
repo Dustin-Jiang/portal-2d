@@ -14,9 +14,48 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Serif+SC:wght@200..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Noto+Sans+SC:wght@100..900&display=swap"
         rel="stylesheet">
+
+    <style>
+        body.prev {
+            background-color: black;
+        }
+    </style>
 </head>
 
-<body>
+<body class="prev">
+    <div class="splash hide">
+        <div class="disclaimer">
+            <div class="fanmade">
+                <div>本作为同人二次创作作品，设定差异等还请理解。</div>
+                <div>This is a fan-made derivative work, please understand the differences in settings, etc.</div>
+                <div>このゲームは二次創作作品です。設定の差異等にご注意ください。</div>
+            </div>
+            <br />
+            <div class="copyright">
+                <div>©2024 光圈科技爱猫TV, 在MIT协议下开放源代码。</div>
+                <div>Valve, the Valve logo, Half-Life, the Half-Life
+                    logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force,
+                    Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source
+                    logo, Counter-Strike: Condition Zero, Portal, the Portal logo, Dota, the Dota 2 logo, and Defense of
+                    the Ancients are trademarks and/or registered trademarks of Valve Corporation. All other trademarks
+                    are property of their respective owners.
+                </div>
+                <div>
+                    当プロジェクトに関する著作物に含まれるキャラクターの名称、形状、デザイン、映像、音声、
+                    ストーリーおよび世界観、ロゴ、音楽その他当プロジェクトの構成素材
+                    に関する著作権等の権利は、株式会社ブシロードまたは当社に権利を許諾した第三者が有しているため、
+                    当社の事前の許可なく、複製、翻案、翻訳、頒布、
+                    インターネット上でのアップロードその他の方法で利用することはできません。
+
+                    本コンテンツに新たな創作性を加えお客様ご自身が制作した著作物を、
+                    個人により営利を目的としない場合に限り、制作、展示、頒布および公開することができます。
+                </div>
+            </div>
+        </div>
+        <div class="logo hide">
+            <img src="./assets/imgs/Tidbits/logo2.png">
+        </div>
+    </div>
     <div class="menu">
         <div class="title">
             <div class="vertical">
@@ -98,6 +137,44 @@
             }, 1800);
         };
 
+        const showSplash = () => {
+            // 辅助延迟函数
+            const delay = (ms) => {
+                return new Promise((resolve) => setTimeout(resolve, ms));
+            }
+            return new Promise(async (resolve) => {
+                const splash = document.querySelector(".splash");
+                const disclaimer = document.querySelector(".disclaimer");
+                const logo = document.querySelector(".logo");
+                const main = document.querySelector(".menu");
+
+                splash.addEventListener("click", async () => {
+                    disclaimer.classList.add("fadeOut2000");
+                    await delay(2000);
+                    disclaimer.classList.remove("fadeOut2000");
+                    disclaimer.classList.add("hide");
+                    logo.classList.add("fadeIn2000");
+                    logo.classList.remove("hide");
+                    await delay(2000);
+                    logo.classList.remove("fadeIn2000");
+                    await delay(1700);
+                    document.body.classList.remove("prev");
+                    splash.classList.add("fadeOut2000");
+                    await delay(2000);
+                    splash.classList.add("hide");
+                    splash.classList.remove("fadeOut2000");
+                    resolve();
+                }, { once: true });
+
+                main.classList.add("hide");
+                disclaimer.classList.remove("hide");
+                disclaimer.classList.add("fadeIn2000");
+                splash.classList.remove("hide");
+                await delay(2000);
+                disclaimer.classList.remove("fadeIn2000");
+            });
+        }
+
         window.onload = async () => {
             await Electron.init();
             window.$store = new Store();
@@ -108,11 +185,16 @@
                 soundManager: new SoundManager("index"),
             }
 
+            window.$game.soundManager.isRandomBGM = false;
             window.$game.soundManager.bgmsFormal = [
+                new Audio("./assets/audios/bgms/ドピュッシー「亜麻色の髪の乙女」.mp3"),
                 new Audio("./assets/audios/bgms/ショパン「雨だれ」.mp3"),
-                new Audio("./assets/audios/bgms/ドビュッシー「亜麻色の髪の乙女」.mp3"),
             ]
             await window.$game.soundManager.load();
+
+            if (!sessionStorage.getItem("bootup"))
+                await showSplash();
+            sessionStorage.setItem("bootup", "true");
 
             const achievementDisp = new AchievementDisp(
                 document.querySelector(".achievement-container > .list")
@@ -123,6 +205,7 @@
                 window.location.href = `./game.html?${window.$store.encode()}`;
             })
 
+            document.querySelector(".menu").classList.remove("hide");
             slideIn();
             if (!Auth.isAuthenticated()) {
                 Auth.toLogin();

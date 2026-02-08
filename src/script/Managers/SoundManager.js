@@ -5,6 +5,8 @@ class SoundManager {
             new Audio("./assets/audios/bgms/阿保剛 - Christina I.mp3"),
         ];
         this.backgroundMusic = null;
+        this.isRandomBGM = true;
+        this.index = 0;
         this.init();
     }
 
@@ -16,8 +18,14 @@ class SoundManager {
             this.backgroundMusic.pause();
         if (name)
             this.backgroundMusic = this.bgms[name];
-        else
-            this.backgroundMusic = this.bgmsFormal[Math.floor(Math.random() * this.bgmsFormal.length)];
+        else {
+            if (this.isRandomBGM)
+                this.backgroundMusic = this.bgmsFormal[Math.floor(Math.random() * this.bgmsFormal.length)];
+            else {
+                this.backgroundMusic = this.bgmsFormal[this.index];
+                this.index = (this.index + 1) % this.bgmsFormal.length;
+            }
+        }
         // console.log(this.backgroundMusic);
         this.backgroundMusic.currentTime = 0;
         this.backgroundMusic.volume = 0.5;
