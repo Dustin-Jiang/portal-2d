@@ -66,6 +66,7 @@
 
     <div id="resource" style="display: none;"></div>
 
+    <script type="text/javascript" src="script/utils/Electron.js"></script>
     <script type="text/javascript" src="script/utils/Store.js"></script>
     <script type="text/javascript" src="script/utils/Auth.js"></script>
     <script type="text/javascript" src="script/utils/Save.js"></script>
@@ -97,6 +98,7 @@
         };
 
         window.onload = async () => {
+            await Electron.init();
             window.$store = new Store();
             Store.remove("toLoad");
 

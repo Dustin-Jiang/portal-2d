@@ -17,6 +17,7 @@ class Auth {
 
     static logout() {
         Store.remove('token');
+        Electron.exit();
         this.toLogin()
     }
 }
