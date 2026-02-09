@@ -157,7 +157,9 @@
                     logo.classList.remove("hide");
                     await delay(2000);
                     logo.classList.remove("fadeIn2000");
-                    await delay(1700);
+                    await delay(1500);
+                    logo.classList.add("fadeOut2000");
+                    await delay(200);
                     document.body.classList.remove("prev");
                     splash.classList.add("fadeOut2000");
                     await delay(2000);
@@ -216,7 +218,11 @@
             const achievementManager = new AchievementManager();
 
             document.querySelector("#start").addEventListener("click", () => {
-                window.location.href = `./game.html?${window.$store.encode()}`;
+                slideOut();
+                window.$game.soundManager.fadeOutBGM();
+                setTimeout(() => {
+                    window.location.href = `./game.html?${window.$store.encode()}`;
+                }, 1750);
             });
             document.querySelector("#load").addEventListener("click", () => {
                 slideOut();
@@ -260,8 +266,12 @@
                 }, 1800);
             });
             document.querySelector("#exit").addEventListener("click", () => {
-                Auth.logout();
-                Auth.toLogin();
+                slideOut();
+                window.$game.soundManager.fadeOutBGM();
+                setTimeout(() => {
+                    Auth.logout();
+                    Auth.toLogin();
+                }, 1800);
             });
 
             document.querySelector(".achievementDisp").addEventListener("scroll", (e) => {

@@ -414,11 +414,3 @@ body {
     width: 25vw;
     height: auto;
 }
-
-.fadeOut2000 {
-    animation: fadeOut 2s forwards;
-}
-
-.fadeIn2000 {
-    animation: fadeIn 2s forwards;
-}

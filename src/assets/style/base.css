@@ -151,6 +151,12 @@ body, html {
 .fadeHalf {
     animation: fadeHalf 0.5s forwards;
 }
+.fadeOut2000 {
+    animation: fadeOut 2s forwards;
+}
+.fadeIn2000 {
+    animation: fadeIn 2s forwards;
+}
 @keyframes fadeHalf {
     from {
         opacity: 1;

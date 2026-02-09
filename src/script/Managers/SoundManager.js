@@ -92,4 +92,24 @@ class SoundManager {
             console.warn(`Sound ${id} not found in AudioManager.`);
         }
     }
+
+    async fadeOutBGM(duration = 1000) {
+        if (!this.backgroundMusic)
+            return;
+        const step = 200;
+        const interval = duration / step;
+        const delta = this.backgroundMusic.volume / step;
+
+        return new Promise((resolve) => {
+            const fade = setInterval(() => {
+                if (this.backgroundMusic.volume > 0) {
+                    this.backgroundMusic.volume = Math.max(0, this.backgroundMusic.volume - delta);
+                } else {
+                    clearInterval(fade);
+                    this.backgroundMusic.pause();
+                    resolve();
+                }
+            }, interval);
+        });
+    }
 }

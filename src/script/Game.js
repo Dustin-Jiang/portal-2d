@@ -20,6 +20,12 @@ class Game {
         this.canvas = document.querySelector("canvas");
         this.ctx = this.canvas.getContext('2d');
 
+        this.canvas.classList.add('fadeIn2000');
+        this.canvas.classList.remove('hidden');
+        setTimeout(() => {
+            this.canvas.classList.remove('fadeIn2000');
+        }, 2000);
+
         /**
          * @type {KeyboardManager}
          */
@@ -109,7 +115,7 @@ class Game {
         this.loaded = true;
         this.view = new PortalView(this.map, this.viewData);
 
-        this.chapterNow = filename.split('.')[ 0 ];
+        this.chapterNow = filename.split('.')[0];
     }
 
     start(prev = 0) {
