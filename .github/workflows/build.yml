@@ -13,15 +13,15 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            command: make:win
+            command: make
             artifact_name: AutoSlides-Windows-Setup
             artifact_path: autoslides/out/make/*.exe
           - os: macos-latest
-            command: make:dmg
+            command: make
             artifact_name: AutoSlides-macOS-DMG
             artifact_path: autoslides/out/make/*.dmg
           - os: ubuntu-latest
-            command: make:deb
+            command: make
             artifact_name: AutoSlides-Linux-Deb
             artifact_path: autoslides/out/make/*.deb
 
