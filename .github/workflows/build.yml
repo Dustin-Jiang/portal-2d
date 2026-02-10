@@ -60,7 +60,7 @@ jobs:
     - name: List build output (Linux)
       if: matrix.os == 'ubuntu-latest'
       run: |
-        ls -lh out/make/**/*.deb
+        find ./out/make -name "*.deb"
 
     - name: List build output (macOS)
       if: matrix.os == 'macos-latest'
