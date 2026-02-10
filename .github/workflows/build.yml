@@ -1,0 +1,71 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            command: make:win
+            artifact_name: AutoSlides-Windows-Setup
+            artifact_path: autoslides/out/make/*.exe
+          - os: macos-latest
+            command: make:dmg
+            artifact_name: AutoSlides-macOS-DMG
+            artifact_path: autoslides/out/make/*.dmg
+          - os: ubuntu-latest
+            command: make:deb
+            artifact_name: AutoSlides-Linux-Deb
+            artifact_path: autoslides/out/make/*.deb
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'pnpm'
+        cache-dependency-path: autoslides/pnpm-lock.yaml
+
+    - name: Install dependencies
+      run: |
+        pnpm install
+
+    - name: Build Application
+      run: |
+        pnpm run ${{ matrix.command }}
+      env:
+        # Disable code signing for CI builds (mainly for Windows)
+        CSC_IDENTITY_AUTO_DISCOVERY: false
+
+    - name: List build output (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        Get-ChildItem -Path out -Recurse -File -Include "*.exe" | Select-Object FullName, Length | Format-Table -AutoSize
+      shell: pwsh
+
+    - name: List build output (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        ls -lh out/make/*.deb
+
+    - name: List build output (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        ls -lh out/make/*.dmg
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.artifact_name }}
+        path: ${{ matrix.artifact_path }}
+        retention-days: 30
