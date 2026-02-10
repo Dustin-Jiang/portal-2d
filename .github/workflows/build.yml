@@ -42,7 +42,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pnpm install --dangerously-allow-all-builds
+        pnpm install
 
     - name: Build Application
       run: |
