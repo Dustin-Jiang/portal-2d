@@ -8,3 +8,7 @@ Thumbs.db
 *.swp
 *.swo
 *.tmp
+
+/.vscode/
+
+/out/
