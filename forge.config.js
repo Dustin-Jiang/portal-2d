@@ -25,11 +25,13 @@ module.exports = {
     },
     {
       name: '@electron-forge/maker-deb',
-      config: {},
-    },
-    {
-      name: '@electron-forge/maker-rpm',
-      config: {},
+      config: {
+        name: 'portal-its-mygo',
+        productName: 'Portal: It\'s MyGO!!!!!',
+        section: 'games',
+        categories: ['Game'],
+        bin: "Portal - It's MyGO!!!!!",
+      },
     },
   ],
   plugins: [
