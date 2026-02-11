@@ -7,11 +7,11 @@ class MouseManager {
         this.canvas = canvas;
         this.container = container;
         this.isCapture = false;
-        this.ratio = this.canvas.width / this.container.clientWidth;
-        this.x = 0;
-        this.y = 0;
-        this.prevX = 0;
-        this.prevY = 0;
+        this.ratio = 1;
+        if (this.canvas && this.container)
+            this.ratio = this.canvas.width / this.container.clientWidth;
+        this.dx = 0;
+        this.dy = 0;
 
         /**
          * @readonly
@@ -27,13 +27,15 @@ class MouseManager {
 
         this.clickable = false;
 
-        this.container.addEventListener('click', () => this.capture());
         this.container.addEventListener('mousemove', (e) => this.move(e));
         this.container.addEventListener('mousedown', (e) => this.mouseDown(e));
         this.container.addEventListener('mouseup', (e) => this.mouseUp(e));
 
-        document.addEventListener('pointerlockchange', () => this.uncapture());
-        document.addEventListener('visibilitychange', () => this.blur());
+        if (this.canvas) {
+            this.container.addEventListener('click', () => this.capture());
+            document.addEventListener('pointerlockchange', () => this.uncapture());
+            document.addEventListener('visibilitychange', () => this.blur());
+        }
     }
 
     async capture() {
@@ -98,36 +100,16 @@ class MouseManager {
     move(e) {
         e.preventDefault();
         if (this.isCapture) {
-            this.ratio = this.canvas.width / this.container.clientWidth;
-            this.x += e.layerX - this.prevX;
-            this.y += e.layerY - this.prevY;
-
-            this.prevX = e.layerX;
-            this.prevY = e.layerY;
-
-            this.x += e.movementX * this.ratio;
-            this.y += e.movementY * this.ratio;
+            this.dx += e.movementX * this.ratio;
+            this.dy += e.movementY * this.ratio;
             // console.log(this.x, this.y, this.ratio);
-            if (this.x < 0) {
-                this.x = 0;
-            }
-            if (this.y < 0) {
-                this.y = 0;
-            }
-            if (this.x > this.canvas.width) {
-                this.x = this.canvas.width;
-            }
-            if (this.y > this.canvas.height) {
-                this.y = this.canvas.height;
-            }
         }
     }
 
-    draw() {
-        window.$game.ctx.drawImage(window.$game.textureManager.getTexture("cursor"), 12, 9, 16, 22, this.x - 4, this.y - 5, 16, 22);
-    }
-
-    get position() {
-        return new Vector(this.x, this.y);
+    update() {
+        const delta = new Vector(this.dx, this.dy);
+        this.dx = 0;
+        this.dy = 0;
+        return delta;
     }
 }

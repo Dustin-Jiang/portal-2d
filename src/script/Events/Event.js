@@ -26,7 +26,7 @@ class GameEvent extends Tile {
             if (player.hitbox.hit(this.hitbox)) {
                 if (this.canInteract) {
                     player.onEvent = true;
-                    if (window.$game.inputManager.firstDown("E", () => {})) {
+                    if (window.$game.inputManager.firstDowns(["E", "GAMEPAD_A"], () => {})) {
                         isActivate = true;
                         this.activate();
                     }

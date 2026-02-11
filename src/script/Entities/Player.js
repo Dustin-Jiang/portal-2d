@@ -67,24 +67,29 @@ class Player extends Entity {
         this.updateXY(deltaFrame,
             () => {
                 if (this.blockMove) return 0;
-                let moveLeft = window.$game.inputManager.isKeysDown([ "A", "Left" ]);
-                let moveRight = window.$game.inputManager.isKeysDown([ "D", "Right" ]);
+                let moveLeft = window.$game.inputManager.moveLeft;
+                let moveRight = window.$game.inputManager.moveRight;
                 move = 0;
-                if (moveLeft)
-                    this.facing = move = -1;
-                if (moveRight)
-                    this.facing = move = 1;
+                if (moveLeft) {
+                    move = -moveLeft
+                    this.facing = -1;
+                }
+                if (moveRight) {
+                    move = moveRight;
+                    this.facing = 1;
+                }
 
                 return move;
             },
             () => {
                 if (this.blockMove) return 0;
-                return window.$game.inputManager.firstDown("Space", () => {
+                const handler = () => {
                     if (this.isOnGround()) {
                         window.$game.statistics.jump++;
                     }
                     this.jumping.setJumpBuffer();
-                });
+                }
+                return window.$game.inputManager.firstDowns(["Space", "GAMEPAD_Y", "GAMEPAD_X"], handler);
             },
             true
         );

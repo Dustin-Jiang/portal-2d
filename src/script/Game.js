@@ -27,18 +27,9 @@ class Game {
         }, 2000);
 
         /**
-         * @type {KeyboardManager}
-         */
-        let keyboard = new KeyboardManager();
-
-        /**
-         * @type {MouseManager}
-        */
-        let mouse = new MouseManager(document.querySelector("#game-container"), this.canvas);
-        /**
         * @type {InputManager}
         */
-        this.inputManager = new InputManager(keyboard, mouse);
+        this.inputManager = new InputManager(document.querySelector("#game-container"), this.canvas);
         /**
         * @type {DataManager}
         */
@@ -133,9 +124,15 @@ class Game {
         const fps = new FrameRate();
         this.computations.push((t) => fps.display(t.timestamp));
 
-        this.renderings.push(() => this.inputManager.mouse.draw());
+        this.computations.push((t) => this.inputManager.update());
+        this.renderings.push(() => this.inputManager.drawCursor());
 
-        this.computations.push((t) => { if (this.inputManager.keyboard.isKeyDown('Esc')) { this.pause(); } });
+        this.computations.push((t) => {
+            if (this.inputManager.isKeysDown(['Esc', "GAMEPAD_BACK"])) {
+                document.exitPointerLock();
+                this.pause();
+            }
+        });
         // this.dialogManager.prints();
         window.requestAnimationFrame((timestamp) => this.loop(timestamp, prev));
     }

@@ -16,7 +16,7 @@ class Cube extends Entity {
         }
         else this.canPick = false;
         if (this.canPick)
-            window.$game.inputManager.firstDown("E", () => {
+            window.$game.inputManager.firstDowns(["E", "GAMEPAD_A"], () => {
                     this.isPicked = !this.isPicked;
                     this.hasPicked += 1;
             });

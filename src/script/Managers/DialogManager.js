@@ -117,9 +117,7 @@ class DialogManager {
             }
             let getEnd = () => {
                 let res = false;
-                window.$game.inputManager.firstDown("Enter", () => { res = true; });
-                window.$game.inputManager.firstDown("Space", () => { res = true; });
-                window.$game.inputManager.firstDown("ClickLeft", () => { res = true; });
+                window.$game.inputManager.firstDowns(["Enter", "Space", "ClickLeft", "GAMEPAD_A"], () => { res = true; });
                 return res;
             };
             let toEnd = false;
@@ -130,7 +128,7 @@ class DialogManager {
                 let span = document.createElement("span");
                 span.textContent = i;
                 this.text.appendChild(span); // 逐字显示文本
-                if (window.$game.inputManager.isKeysDown([ "LCtrl", "RCtrl" ])) {
+                if (window.$game.inputManager.isKeysDown([ "LCtrl", "RCtrl", "GAMEPAD_Y" ])) {
                     await delay(10); // 控制打印速度
                     continue;
                 }
@@ -140,11 +138,11 @@ class DialogManager {
             }
 
             // 等待用户输入
-            if (!window.$game.inputManager.isKeysDown([ "LCtrl", "RCtrl" ]))
+            if (!window.$game.inputManager.isKeysDown([ "LCtrl", "RCtrl", "GAMEPAD_Y" ]))
                 while (
                     await (async () => {
                         await delay(100);
-                        return !getEnd() && !window.$game.inputManager.isKeysDown([ "LCtrl", "RCtrl" ]);
+                        return !getEnd() && !window.$game.inputManager.isKeysDown([ "LCtrl", "RCtrl", "GAMEPAD_Y" ]);
                     })()
                 );
             else await delay(100);

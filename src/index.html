@@ -111,7 +111,11 @@
     <script type="text/javascript" src="script/utils/Save.js"></script>
     <script type="text/javascript" src="script/utils/Vector.js"></script>
     <script type="text/javascript" src="script/utils/Hitbox.js"></script>
+    <script type="text/javascript" src="script/utils/Keyboard.js"></script>
+    <script type="text/javascript" src="script/utils/Gamepad.js"></script>
+    <script type="text/javascript" src="script/utils/Mouse.js"></script>
     <script type="text/javascript" src="script/utils/AchievementDisp.js"></script>
+    <script type="text/javascript" src="script/Managers/InputManager.js"></script>
     <script type="text/javascript" src="script/Managers/AchievementManager.js"></script>
     <script type="text/javascript" src="script/Managers/DataManager.js"></script>
     <script type="text/javascript" src="script/Managers/SoundManager.js"></script>
@@ -182,9 +186,14 @@
             window.$store = new Store();
             Store.remove("toLoad");
 
+            if (!Auth.isAuthenticated()) {
+                Auth.toLogin();
+            }
+
             window.$game = {
                 dataManager: new DataManager(),
                 soundManager: new SoundManager("index"),
+                inputManager: new InputManager(document.querySelector("body"), null),
             }
 
             window.$game.soundManager.isRandomBGM = false;
@@ -209,9 +218,6 @@
 
             document.querySelector(".menu").classList.remove("hide");
             slideIn();
-            if (!Auth.isAuthenticated()) {
-                Auth.toLogin();
-            }
 
             let canScroll = false;
 

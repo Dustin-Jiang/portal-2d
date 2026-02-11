@@ -58,8 +58,8 @@ class View {
         this.computations.forEach((comp) => comp(t));
     }
 
-    get mouse() {
-        return window.$game.inputManager.mouse;
+    get input() {
+        return window.$game.inputManager;
     }
 
     get ctx() {
@@ -110,12 +110,12 @@ class PortalView extends View {
 
         });
         this.computations.push((t) => {
-            this.portalGun.update(this.player.getCenter(), this.mouse.position);
+            this.portalGun.update(this.player.getCenter(), this.input.position);
             if (!this.player.blockMove) {
-                if (this.mouse.left) {
+                if (this.input.left) {
                     this.portalGun.shot(this.player.getCenter(), 0, t);
                 }
-                if (this.mouse.right) {
+                if (this.input.right) {
                     this.portalGun.shot(this.player.getCenter(), 1, t);
                 }
             }
