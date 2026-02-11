@@ -361,7 +361,9 @@ body {
 }
 
 .save-container .list-item:hover,
-.achievement-container .list-item:hover {
+.save-container .list-item.hovered,
+.achievement-container .list-item:hover,
+.achievement-container .list-item.hovered {
     color: var(--theme);
     animation: 0.5s spreadBg cubic-bezier(0.23, 1, 0.32, 1) forwards;
     background: linear-gradient(90deg, #ffffff 0 50%, var(--theme) 50% 100%);

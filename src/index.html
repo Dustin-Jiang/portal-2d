@@ -114,6 +114,7 @@
     <script type="text/javascript" src="script/utils/Keyboard.js"></script>
     <script type="text/javascript" src="script/utils/Gamepad.js"></script>
     <script type="text/javascript" src="script/utils/Mouse.js"></script>
+    <script type="text/javascript" src="script/utils/Menu.js"></script>
     <script type="text/javascript" src="script/utils/AchievementDisp.js"></script>
     <script type="text/javascript" src="script/Managers/InputManager.js"></script>
     <script type="text/javascript" src="script/Managers/AchievementManager.js"></script>
@@ -181,6 +182,14 @@
             });
         }
 
+        const loop = (timestamp) => {
+            window.$game.inputManager.gamepad.update();
+            window.$game.mainMenu.update();
+            window.$game.saveMenu.update();
+            window.$game.achievementMenu.update();
+            window.requestAnimationFrame(loop);
+        };
+
         window.onload = async () => {
             await Electron.init();
             window.$store = new Store();
@@ -215,6 +224,7 @@
                 Store.set("toLoad", JSON.stringify(data));
                 window.location.href = `./game.html?${window.$store.encode()}`;
             })
+            load.build();
 
             document.querySelector(".menu").classList.remove("hide");
             slideIn();
@@ -223,62 +233,85 @@
 
             const achievementManager = new AchievementManager();
 
-            document.querySelector("#start").addEventListener("click", () => {
-                slideOut();
-                window.$game.soundManager.fadeOutBGM();
-                setTimeout(() => {
-                    window.location.href = `./game.html?${window.$store.encode()}`;
-                }, 1750);
-            });
-            document.querySelector("#load").addEventListener("click", () => {
-                slideOut();
-                setTimeout(() => {
-                    document.querySelector(".menu").classList.add("hide");
-                    document.querySelector(".save").classList.remove("hide");
-                    load.build();
-                    slideIn();
-                }, 1800);
-            });
-            document.querySelector("#save-back").addEventListener("click", () => {
-                slideOut();
-                setTimeout(() => {
-                    document.querySelector(".save").classList.add("hide");
-                    document.querySelector(".save-container").innerHTML = "";
-                    document.querySelector(".menu").classList.remove("hide");
-                    slideIn();
-                }, 1800);
-            });
-            document.querySelector("#achievement").addEventListener("click", () => {
-                slideOut();
-                if (!Store.get("achievements") || !AchievementManager.getAll().length) {
-                    achievementManager.refresh();
-                }
-                setTimeout(() => {
-                    document.querySelector(".menu").classList.add("hide");
-                    document.querySelector(".achievementDisp").classList.remove("hide");
-                    achievementDisp.disp();
-                    slideIn();
-                    canScroll = true;
-                }, 1800);
-            });
-            document.querySelector("#achievement-back").addEventListener("click", () => {
-                slideOut();
-                canScroll = false;
-                setTimeout(() => {
-                    document.querySelector(".achievementDisp").classList.add("hide");
-                    document.querySelector(".achievement-container > .list").innerHTML = "";
-                    document.querySelector(".menu").classList.remove("hide");
-                    slideIn();
-                }, 1800);
-            });
-            document.querySelector("#exit").addEventListener("click", () => {
-                slideOut();
-                window.$game.soundManager.fadeOutBGM();
-                setTimeout(() => {
-                    Auth.logout();
-                    Auth.toLogin();
-                }, 1800);
-            });
+            window.$game.mainMenu = new Menu(
+                document.querySelector(".menu"),
+                document.querySelectorAll(".menu > .button-container > .button"),
+                [
+                    () => {
+                        slideOut();
+                        window.$game.soundManager.fadeOutBGM();
+                        setTimeout(() => {
+                            window.location.href = `./game.html?${window.$store.encode()}`;
+                        }, 1750);
+                    },
+                    () => {
+                        slideOut();
+                        setTimeout(() => {
+                            document.querySelector(".menu").classList.add("hide");
+                            document.querySelector(".save").classList.remove("hide");
+                            slideIn();
+                        }, 1800);
+                    },
+                    () => {
+                        slideOut();
+                        if (!Store.get("achievements") || !AchievementManager.getAll().length) {
+                            achievementManager.refresh();
+                        }
+                        setTimeout(() => {
+                            document.querySelector(".menu").classList.add("hide");
+                            document.querySelector(".achievementDisp").classList.remove("hide");
+                            achievementDisp.disp();
+                            slideIn();
+                            canScroll = true;
+                        }, 1800);
+                    },
+                    () => {
+                        slideOut();
+                        window.$game.soundManager.fadeOutBGM();
+                        setTimeout(() => {
+                            Auth.logout();
+                            Auth.toLogin();
+                        }, 1800);
+                    }
+                ]);
+
+            window.$game.saveMenu = new Menu(
+                document.querySelector(".save"),
+                [
+                    ...document.querySelectorAll(".save-container .list-item"),
+                    ...document.querySelectorAll(".save > .button-container > .button"),
+                ],
+                [
+                    ...Array.from(load.getAll()).map((item) => {
+                        return () => {
+                            load.switchCallback(item[1]);
+                        };
+                    }),
+                    () => {
+                        slideOut();
+                        setTimeout(() => {
+                            document.querySelector(".save").classList.add("hide");
+                            document.querySelector(".menu").classList.remove("hide");
+                            slideIn();
+                        }, 1800);
+                    },
+            ]
+            );
+
+            window.$game.achievementMenu = new Menu(
+                document.querySelector(".achievementDisp"),
+                document.querySelectorAll(".achievementDisp > .button-container > .button"),
+                [() => {
+                    slideOut();
+                    canScroll = false;
+                    setTimeout(() => {
+                        document.querySelector(".achievementDisp").classList.add("hide");
+                        document.querySelector(".achievement-container > .list").innerHTML = "";
+                        document.querySelector(".menu").classList.remove("hide");
+                        slideIn();
+                    }, 1800);
+                }]
+            );
 
             document.querySelector(".achievementDisp").addEventListener("scroll", (e) => {
                 if (canScroll) {
@@ -287,6 +320,7 @@
                 }
             })
             await achievementManager.load()
+            loop();
         }
     </script>
 </body>
