@@ -1,11 +1,29 @@
 class Save {
-    constructor() {
+    constructor(parent = null) {
         this.ctx = document.querySelector("#save-load");
+        this.parent = parent;
     }
 
     show() {
         this.build();
         this.ctx.classList.remove("hidden");
+        if (this.parent) {
+            this.parent.classList.add("hidden");
+        }
+    }
+
+    setMenu(parent) {
+        this.menu = new Menu(
+            parent,
+            [
+                this.ctx.querySelector("#new-save-btn"),
+                this.ctx.querySelector(".button")
+            ],
+            [
+                () => this.save(),
+                () => this.hide()
+            ]
+        );
     }
 
     hide() {
@@ -14,10 +32,14 @@ class Save {
         const container = document.createElement("div")
         container.classList.add("save-container")
         this.ctx.appendChild(container)
+        if (this.parent) {
+            this.parent.classList.remove("hidden");
+        }
     }
 
     build() {
         const container = document.querySelector(".save-container")
+        container.innerHTML = ""
 
         const title = document.createElement("div")
         title.classList.add("title")
@@ -45,6 +67,7 @@ class Save {
 
         const newBtn = document.createElement("div")
         newBtn.classList.add("list-item");
+        newBtn.id = "new-save-btn"
         newBtn.innerHTML = "新建存档";
         newBtn.style["fontWeight"] = 800;
 
@@ -61,6 +84,8 @@ class Save {
         container.appendChild(backBtn)
 
         this.ctx.appendChild(container)
+
+        this.setMenu(title);
     }
 
     save(title = null) {
@@ -111,13 +136,30 @@ class Save {
 }
 
 class Load extends Save {
-    constructor(callback) {
-        super();
+    constructor(parent = null, callback) {
+        super(parent);
         this.switchCallback = callback;
+    }
+
+    setMenu(parent) {
+        this.menu = new Menu(
+            parent,
+            [
+                ...this.ctx.querySelectorAll(".list-item"),
+                this.ctx.querySelector(".button")
+            ],
+            [
+                ...Array.from(this.getAll()).map((item) => {
+                    return () => this.switchCallback(item[1]);
+                }),
+                () => this.hide()
+            ]
+        );
     }
 
     build() {
         const container = document.querySelector(".save-container")
+        container.innerHTML = ""
 
         const title = document.createElement("div");
         title.classList.add("title");
@@ -159,5 +201,7 @@ class Load extends Save {
         container.appendChild(backBtn)
 
         this.ctx.appendChild(container)
+
+        this.setMenu(title);
     }
 }

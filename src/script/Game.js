@@ -61,8 +61,10 @@ class Game {
         };
         window.$store = this.store;
 
-        this.savePopup = new Save();
-        this.loadPopup = new Load((data) => {
+        this.controlMenu = document.querySelector('#control');
+
+        this.savePopup = new Save(this.controlMenu);
+        this.loadPopup = new Load(this.controlMenu, (data) => {
             Store.set("parfait", JSON.stringify(data.parfait));
             Store.set("camera", JSON.stringify(data.camera));
             Store.set("statistics", JSON.stringify(data.statistics ?? {}));
@@ -73,17 +75,16 @@ class Game {
             this.loadPopup.hide();
         });
 
-        this.controlMenu = document.querySelector('#control');
         this.resumeBtn = document.querySelector('#control-resume');
-        this.resumeBtn.addEventListener('click', () => this.resume());
+        this.resumeBtnAction = () => this.resume();
         this.restartBtn = document.querySelector('#control-restart');
-        this.restartBtn.addEventListener('click', () => this.restart());
+        this.restartBtnAction = () => this.restart();
         this.backBtn = document.querySelector('#control-back');
-        this.backBtn.addEventListener('click', () => this.exit());
+        this.backBtnAction = () => this.exit();
         this.saveBtn = document.querySelector('#control-save');
-        this.saveBtn.addEventListener('click', () => this.savePopup.show());
+        this.saveBtnAction = () => this.savePopup.show();
         this.loadBtn = document.querySelector('#control-load');
-        this.loadBtn.addEventListener('click', () => this.loadPopup.show());
+        this.loadBtnAction = () => this.loadPopup.show();
 
         this.deadScreen = new DeadScreen();
 
@@ -126,6 +127,12 @@ class Game {
 
         this.computations.push((t) => this.inputManager.update());
         this.renderings.push(() => this.inputManager.drawCursor());
+
+        this.controlMenuInstance = new Menu(
+            document.querySelector('#control > .button-container'),
+            [this.resumeBtn, this.restartBtn, this.loadBtn, this.saveBtn, this.backBtn],
+            [this.resumeBtnAction, this.restartBtnAction, this.loadBtnAction, this.saveBtnAction, this.backBtnAction],
+        );
 
         this.computations.push((t) => {
             if (this.inputManager.isKeysDown(['Esc', "GAMEPAD_BACK"])) {

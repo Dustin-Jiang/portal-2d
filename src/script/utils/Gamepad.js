@@ -1,5 +1,6 @@
 class GamepadManager {
     SENSITIVITY = 15;
+    DEADZONE = 0.1;
 
     constructor() {
         /**
@@ -74,8 +75,7 @@ class GamepadManager {
      * @private
      */
     axisDeadzone(value) {
-        const DEADZONE = 0.1;
-        if (Math.abs(value) < DEADZONE) {
+        if (Math.abs(value) < this.DEADZONE) {
             return 0.0;
         }
         return value;
