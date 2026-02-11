@@ -14,16 +14,16 @@ jobs:
         include:
           - os: windows-latest
             command: make
-            artifact_name: AutoSlides-Windows-Setup
-            artifact_path: autoslides/out/make/*.exe
+            artifact_name: Portal-Its-MyGO-Windows-Setup
+            artifact_path: ./out/make/squirrel.windows/x64/*.exe
           - os: macos-latest
             command: make
-            artifact_name: AutoSlides-macOS-DMG
-            artifact_path: autoslides/out/make/*.dmg
+            artifact_name: Portal-Its-MyGO-macOS-DMG
+            artifact_path: ./out/make/*.dmg
           - os: ubuntu-latest
             command: make
-            artifact_name: AutoSlides-Linux-Deb
-            artifact_path: autoslides/out/make/*.deb
+            artifact_name: Portal-Its-MyGO-Linux-Deb
+            artifact_path: ./out/make/deb/x64/*.deb
 
     steps:
     - name: Checkout code
