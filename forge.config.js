@@ -10,7 +10,9 @@ module.exports = {
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        setUpIcon: "./src/assets/ico/Installer-Windows.ico", 
+      },
     },
     {
       name: '@electron-forge/maker-zip',
