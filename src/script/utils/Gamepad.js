@@ -4,7 +4,7 @@ class GamepadManager {
 
     constructor() {
         /**
-         * @type {Gamepad | null}
+         * @type {number | null}
          * @readonly
          */
         this.gamepad = null;
@@ -31,7 +31,7 @@ class GamepadManager {
         this.RY = 0.0;
 
         window.addEventListener("gamepadconnected", (e) => {
-            this.gamepad = e.gamepad;
+            this.gamepad = e.gamepad.index;
         })
     }
 
@@ -40,9 +40,12 @@ class GamepadManager {
     }
 
     update() {
-        if (!this.gamepad) return;
+        if (this.gamepad === null) return;
 
-        this.gamepad.buttons.forEach((button, index) => {
+        const gamepad = navigator.getGamepads()[this.gamepad];
+        console.debug(this.gamepad, gamepad.buttons, gamepad.axes);
+
+        gamepad.buttons.forEach((button, index) => {
             switch (index) {
                 case 0: this.A = button.pressed; break;
                 case 1: this.B = button.pressed; break;
@@ -61,7 +64,7 @@ class GamepadManager {
             }
         });
 
-        this.gamepad.axes.forEach((axis, index) => {
+        gamepad.axes.forEach((axis, index) => {
             switch (index) {
                 case 0: this.LX = this.axisDeadzone(axis); break;
                 case 1: this.LY = this.axisDeadzone(axis); break;
