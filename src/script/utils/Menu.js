@@ -6,7 +6,7 @@ class Menu {
      * @param {HTMLElement[]} items
      * @param {Function[]} operations
      */
-    constructor(base, items = [], operations = []) {
+    constructor(base, items = [], operations = [], scroll = false) {
         if (items.length !== operations.length) {
             throw new Error(`Menu items and operations length mismatch, items: ${items.length}, operations: ${operations.length}`);
         }
@@ -18,6 +18,7 @@ class Menu {
                 this.select(index);
             });
         });
+        this.scroll = scroll;
         this.update();
     }
 
@@ -53,9 +54,14 @@ class Menu {
         }
         this.focus += step;
         this.focus = (this.focus + 1 + this.items.length + 1) % (this.items.length + 1) - 1;
-        console.debug("Menu focus:", this.focus);
         if (this.focus !== -1) {
             this.items[this.focus].classList.add("hovered");
+            if (this.scroll)
+                this.items[this.focus].scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest",
+                    container: "nearest"
+                });
         }
     }
 }
