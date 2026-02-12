@@ -1,7 +1,7 @@
 class SoundManager {
     constructor() {
         this.bgmsFormal = [
-            new Audio("./assets/audios/bgms/karitou.mp3"),
+            new Audio("./assets/audios/bgms/kaeritou.mp3"),
             new Audio("./assets/audios/bgms/Christina I.mp3"),
         ];
         this.backgroundMusic = null;
